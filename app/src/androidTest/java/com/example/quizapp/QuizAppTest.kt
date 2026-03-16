@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.Espresso.onView
@@ -55,30 +56,22 @@ class QuizActivityTest {
             composeTestRule.onAllNodesWithText("Score:", substring = true).fetchSemanticsNodes().isNotEmpty()
         }
         
-        // Check initial score format
+        // Check initial score
         composeTestRule.onNodeWithText("Score: 0 / 0").assertIsDisplayed()
 
-        // Find a button that has a flag name. We use hasClickAction to avoid the Image node.
-        val defaults = listOf("China", "Namibia", "Bhutan", "Brazil", "Italy")
-        var foundNode: SemanticsNodeInteraction? = null
-        
-        for (name in defaults) {
-            val node = composeTestRule.onAllNodes(hasText(name, ignoreCase = true) and hasClickAction()).onFirst()
-            try {
-                node.assertIsDisplayed()
-                foundNode = node
-                break
-            } catch (e: Throwable) {}
-        }
+        // Identify the correct answer from the image's content description
+        // The AsyncImage uses currentItem.name as its contentDescription
+        val imageNode = composeTestRule.onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.ContentDescription))
+        val correctAnswer = imageNode.fetchSemanticsNode().config[SemanticsProperties.ContentDescription].first()
 
-        if (foundNode == null) throw AssertionError("Could not find any quiz option button")
-
-        foundNode.performClick()
+        // Click the button that matches the correct answer
+        composeTestRule.onNodeWithText(correctAnswer).performClick()
         
-        // Total should now be 1 (substring check because score changes)
-        composeTestRule.onNodeWithText(" / 1", substring = true).assertIsDisplayed()
+        // Verify both score and total are updated (1 / 1)
+        composeTestRule.onNodeWithText("Score: 1 / 1").assertIsDisplayed()
         
-        // Feedback button "Next" should appear
+        // Verify feedback and Next button appear
+        composeTestRule.onNodeWithText("Correct!").assertIsDisplayed()
         composeTestRule.onNodeWithText("Next").assertIsDisplayed()
     }
 }
@@ -108,10 +101,10 @@ class GalleryActivityTest {
             composeTestRule.onNodeWithText("Country").performTextInput("Test Flag")
             
             // Click "Add" button in the dialog
-            composeTestRule.onNode(hasText("Add") and hasClickAction()).performClick()
+            composeTestRule.onNode(hasText("Add")).performClick()
             
-            // Verify it appeared in the list (using onFirst in case of multiple semantic nodes)
-            composeTestRule.onAllNodesWithText("Test Flag").onFirst().assertIsDisplayed()
+            // Verify it appeared in the list
+            composeTestRule.onNodeWithText("Test Flag").assertIsDisplayed()
         } finally {
             Intents.release()
         }
