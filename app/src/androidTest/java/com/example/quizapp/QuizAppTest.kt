@@ -96,7 +96,7 @@ class GalleryActivityTest {
             resultData.data = Uri.parse("android.resource://com.example.quizapp/" + R.drawable.italy)
             val result = Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
 
-            intending(hasAction(Intent.ACTION_OPEN_DOCUMENT)).respondWith(result)
+           intending(hasAction(Intent.ACTION_OPEN_DOCUMENT)).respondWith(result)
 
             // Open the picker
             composeTestRule.onNodeWithText("Add new entry").performClick()

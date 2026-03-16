@@ -19,7 +19,10 @@ The `GalleryContentProvider` is published under the authority `com.example.quiza
 2. Run the following command in your terminal:
 ```bash
 adb shell content query --uri content://com.example.quizapp.provider/gallery_items
+
+~/Library/Android/sdk/platform-tools/adb shell content query --uri content://com.example.quizapp.provider/gallery_items
 ```
+*The second row is because I have a Mac and adb is not placed in the PATH. It is in the library folder.
 **Expected Result**: The terminal will display a list of all flags currently in the database (e.g., China, Italy, Namibia) along with their internal image URIs.
 
 ---
