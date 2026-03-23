@@ -69,9 +69,40 @@ class QuizActivityTest {
         
         // Verify both score and total are updated (1 / 1)
         composeTestRule.onNodeWithText("Score: 1 / 1").assertIsDisplayed()
+
         
         // Verify feedback and Next button appear
         composeTestRule.onNodeWithText("Correct!").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Next").assertIsDisplayed()
+
+
+    }
+
+    @Test
+    fun testScoreWrong() {
+        // Wait for database items to load
+        composeTestRule.waitUntil(10000) {
+            composeTestRule.onAllNodesWithText("Score:", substring = true).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Check initial score
+        composeTestRule.onNodeWithText("Score: 0 / 0").assertIsDisplayed()
+
+        val imageNode = composeTestRule.onNode(SemanticsMatcher.keyIsDefined(SemanticsProperties.ContentDescription))
+        val correctAnswer = imageNode.fetchSemanticsNode().config[SemanticsProperties.ContentDescription].first()
+
+        composeTestRule
+            .onAllNodes(hasClickAction() and hasText(correctAnswer).not())
+            .onFirst()
+            .performClick()
+
+        //val nodeText = wrongAnswer.toString()
+
+        //composeTestRule.onNodeWithText(nodeText).performClick()
+
+        composeTestRule.onNodeWithText("Score: 0 / 1").assertIsDisplayed()
+
+        composeTestRule.onNodeWithText("Wrong!").assertIsDisplayed()
         composeTestRule.onNodeWithText("Next").assertIsDisplayed()
     }
 }

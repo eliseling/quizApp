@@ -66,7 +66,7 @@ class QuizViewModel(private val repository: GalleryRepository) : ViewModel() {
             feedback = "Correct!"
 
         } else {
-            feedback = "Wrong! Correct answer: ${currentItem?.name}"
+            feedback = "Wrong!"
         }
     }
 }
