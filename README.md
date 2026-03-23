@@ -23,6 +23,7 @@ adb shell content query --uri content://com.example.quizapp.provider/gallery_ite
 ~/Library/Android/sdk/platform-tools/adb shell content query --uri content://com.example.quizapp.provider/gallery_items
 ```
 *The second row is because I have a Mac and adb is not placed in the PATH. It is in the library folder.
+
 **Expected Result**: The terminal will display a list of all flags currently in the database (e.g., China, Italy, Namibia) along with their internal image URIs.
 
 ---
@@ -37,12 +38,14 @@ adb shell content query --uri content://com.example.quizapp.provider/gallery_ite
     *   Methods: `testMainMenuToGallery()`, `testMainMenuToQuiz()`
 *   **Result**: **Passed**
 
-### 2. Quiz Score Update
-*   **Description (Use Case)**: As a user playing the quiz, I want to see my progress. I look at the image of a flag and tap one of the three country name options.
-*   **Expected Result**: Upon tapping an option, the "total questions" count in the score (the denominator) must increment by 1 immediately. The app should then display a "Next" button to allow me to proceed.
+### 2. Quiz Scoring and Feedback (Correct & Wrong Answers)
+*   **Description (Use Case)**: As a user playing the quiz, I want to see if my answer is correct and how it affects my score. I look at the image of a flag and tap one of the three country name options.
+*   **Expected Results**:
+    *   **Correct Answer**: Tapping the correct flag name increments both the score and the total count (e.g., "Score: 1 / 1"). The app displays "Correct!" feedback and a "Next" button.
+    *   **Wrong Answer**: Tapping an incorrect flag name increments only the total count (e.g., "Score: 0 / 1"). The app displays "Wrong!" feedback and a "Next" button.
 *   **Implementation**: 
     *   Class: `com.example.quizapp.QuizActivityTest`
-    *   Method: `testScoreUpdate()`
+    *   Methods: `testScoreUpdate()`, `testScoreWrong()`
 *   **Result**: **Passed**
 
 ### 3. Adding a New Flag (Gallery Management)
